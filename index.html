@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>10000官網驗證器 - 防詐騙檢查</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Microsoft JhengHei', 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 600px;
+            width: 100%;
+            padding: 40px;
+            animation: slideIn 0.5s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .shield-icon {
+            font-size: 60px;
+            margin-bottom: 15px;
+        }
+
+        h1 {
+            color: #333;
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .official-url {
+            background: #f0f7ff;
+            border-left: 4px solid #2196F3;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+
+        .official-url strong {
+            color: #2196F3;
+            font-size: 16px;
+        }
+
+        .input-group {
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            color: #333;
+            font-weight: 600;
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 15px 50px 15px 15px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+
+        input[type="text"]:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .clear-btn {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: #999;
+            cursor: pointer;
+            font-size: 20px;
+            padding: 5px;
+            display: none;
+        }
+
+        .clear-btn:hover {
+            color: #333;
+        }
+
+        .check-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .check-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .check-btn:active {
+            transform: translateY(0);
+        }
+
+        .check-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .result {
+            margin-top: 25px;
+            padding: 20px;
+            border-radius: 10px;
+            display: none;
+            animation: fadeIn 0.5s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .result.safe {
+            background: #d4edda;
+            border: 2px solid #28a745;
+        }
+
+        .result.danger {
+            background: #f8d7da;
+            border: 2px solid #dc3545;
+        }
+
+        .result-icon {
+            font-size: 40px;
+            margin-bottom: 10px;
+        }
+
+        .result-title {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .result.safe .result-title {
+            color: #28a745;
+        }
+
+        .result.danger .result-title {
+            color: #dc3545;
+        }
+
+        .result-message {
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .warning-list {
+            margin-top: 15px;
+            padding-left: 20px;
+        }
+
+        .warning-list li {
+            margin: 8px 0;
+            color: #721c24;
+        }
+
+        .tips {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin-top: 25px;
+            border-radius: 5px;
+        }
+
+        .tips h3 {
+            color: #856404;
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+
+        .tips ul {
+            padding-left: 20px;
+            color: #856404;
+        }
+
+        .tips li {
+            margin: 5px 0;
+            font-size: 14px;
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 25px;
+            }
+
+            h1 {
+                font-size: 24px;
+            }
+
+            .shield-icon {
+                font-size: 50px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="shield-icon">🛡️</div>
+            <h1>10000官網驗證器</h1>
+            <p class="subtitle">保護您免受詐騙網站侵害</p>
+        </div>
+
+        <div class="official-url">
+            <strong>✓ 正版官網：</strong> https://10000.gov.tw
+        </div>
+
+        <div class="input-group">
+            <label for="urlInput">請輸入要檢查的網址：</label>
+            <div class="input-wrapper">
+                <input 
+                    type="text" 
+                    id="urlInput" 
+                    placeholder="例如：https://10000.gov.tw"
+                    autocomplete="off"
+                >
+                <button class="clear-btn" id="clearBtn">✕</button>
+            </div>
+        </div>
+
+        <button class="check-btn" id="checkBtn">立即檢查</button>
+
+        <div class="result" id="result"></div>
+
+        <div class="tips">
+            <h3>⚠️ 防詐騙小提醒</h3>
+            <ul>
+                <li>政府官網網址結尾為 <strong>.gov.tw</strong></li>
+                <li>注意網址拼寫，詐騙網站常使用相似字元</li>
+                <li>不要點擊簡訊或電子郵件中的可疑連結</li>
+                <li>有疑問請撥打 165 反詐騙專線</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        const urlInput = document.getElementById('urlInput');
+        const clearBtn = document.getElementById('clearBtn');
+        const checkBtn = document.getElementById('checkBtn');
+        const result = document.getElementById('result');
+        const officialUrl = 'https://10000.gov.tw';
+
+        // 顯示/隱藏清除按鈕
+        urlInput.addEventListener('input', () => {
+            clearBtn.style.display = urlInput.value ? 'block' : 'none';
+        });
+
+        // 清除輸入
+        clearBtn.addEventListener('click', () => {
+            urlInput.value = '';
+            clearBtn.style.display = 'none';
+            result.style.display = 'none';
+            urlInput.focus();
+        });
+
+        // Enter 鍵觸發檢查
+        urlInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                checkUrl();
+            }
+        });
+
+        // 檢查按鈕
+        checkBtn.addEventListener('click', checkUrl);
+
+        function checkUrl() {
+            let inputUrl = urlInput.value.trim();
+            
+            if (!inputUrl) {
+                showResult(false, '請輸入網址', '您尚未輸入任何網址，請在上方欄位輸入要檢查的網址。');
+                return;
+            }
+
+            // 自動添加 https:// 如果沒有協議
+            if (!inputUrl.match(/^https?:\/\//i)) {
+                inputUrl = 'https://' + inputUrl;
+            }
+
+            try {
+                const url = new URL(inputUrl);
+                const normalizedInput = normalizeUrl(url);
+                const normalizedOfficial = normalizeUrl(new URL(officialUrl));
+
+                if (normalizedInput === normalizedOfficial) {
+                    showResult(
+                        true,
+                        '✓ 這是正版官網',
+                        '恭喜！您輸入的網址是 10000 的正版官方網站，可以安全使用。'
+                    );
+                } else {
+                    const warnings = analyzeUrl(url);
+                    showResult(
+                        false,
+                        '⚠️ 這不是正版官網！',
+                        '警告！這不是 10000 的正版官網，請小心可能是詐騙網站。',
+                        warnings
+                    );
+                }
+            } catch (e) {
+                showResult(
+                    false,
+                    '❌ 網址格式錯誤',
+                    '您輸入的網址格式不正確，請檢查後重新輸入。例如：https://10000.gov.tw'
+                );
+            }
+        }
+
+        function normalizeUrl(url) {
+            let hostname = url.hostname.toLowerCase();
+            let pathname = url.pathname;
+            
+            // 移除 www.
+            hostname = hostname.replace(/^www\./, '');
+            
+            // 確保路徑以 / 結尾或為空
+            if (pathname !== '/' && pathname.endsWith('/')) {
+                pathname = pathname.slice(0, -1);
+            }
+            
+            return `${url.protocol}//${hostname}${pathname}`;
+        }
+
+        function analyzeUrl(url) {
+            const warnings = [];
+            const hostname = url.hostname.toLowerCase();
+            
+            if (!hostname.endsWith('.gov.tw')) {
+                warnings.push('網址不是以 .gov.tw 結尾（政府官網的標準網域）');
+            }
+            
+            if (hostname.includes('10000') && hostname !== '10000.gov.tw') {
+                warnings.push('網址包含 "10000" 但網域不正確，可能是仿冒網站');
+            }
+            
+            if (url.protocol !== 'https:') {
+                warnings.push('未使用安全的 HTTPS 連線');
+            }
+
+            // 檢查常見的詐騙手法
+            const suspiciousPatterns = [
+                { pattern: /10000.*\.com/, desc: '使用 .com 而非 .gov.tw' },
+                { pattern: /1000[ol0]/, desc: '使用相似字元（如 o、l、0）' },
+                { pattern: /gov-tw|gov_tw/, desc: '使用連字符或底線分隔 gov 和 tw' }
+            ];
+
+            suspiciousPatterns.forEach(({ pattern, desc }) => {
+                if (pattern.test(hostname)) {
+                    warnings.push(`可疑特徵：${desc}`);
+                }
+            });
+
+            return warnings;
+        }
+
+        function showResult(isSafe, title, message, warnings = []) {
+            result.className = 'result ' + (isSafe ? 'safe' : 'danger');
+            
+            let warningHtml = '';
+            if (warnings.length > 0) {
+                warningHtml = '<ul class="warning-list">';
+                warnings.forEach(warning => {
+                    warningHtml += `<li>${warning}</li>`;
+                });
+                warningHtml += '</ul>';
+            }
+
+            result.innerHTML = `
+                <div class="result-icon">${isSafe ? '✅' : '🚨'}</div>
+                <div class="result-title">${title}</div>
+                <div class="result-message">${message}${warningHtml}</div>
+            `;
+            
+            result.style.display = 'block';
+            result.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+    </script>
+</body>
+</html>
